@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.CompilerServices;
 
 namespace WFConFin.Models
@@ -15,33 +16,33 @@ namespace WFConFin.Models
         public required string Nome { get; set; }
 
 
-        [StringLength(20, MinimumLength = 8, ErrorMessage = "O campo 'Telefone' deve ter entre 8 e 20 caracteres!")]
+        [StringLength(20, ErrorMessage = "O campo 'Telefone' deve ter até 20 caracteres!")]
         public string? Telefone { get; set; }
 
 
-        [StringLength(200, MinimumLength = 5, ErrorMessage = "O campo 'Email' deve ter entre 5 e 200 caracteres!")]
         [EmailAddress(ErrorMessage = "O campo 'Email' deve ser um endereço de e-mail válido!")]
         public string? Email { get; set; }
 
 
-        [StringLength(20, MinimumLength = 3, ErrorMessage = "O campo 'DataNascimento' deve ter entre 3 e 20 caracteres!")]
         [DataType(DataType.Date, ErrorMessage = "O campo 'DataNascimento' deve ser uma data válida!")]
-        public DateTime DataNascimento { get; set; }
+        public DateTime? DataNascimento { get; set; }
 
 
-        
+        [Column(TypeName = "decimal(18,2)")]
         public decimal Salario { get; set; }
 
 
-        [StringLength(20, MinimumLength = 3, ErrorMessage = "O campo 'Genero' deve ter entre 3 e 20 caracteres!")]
+        [StringLength(20, ErrorMessage = "O campo 'Genero' deve ter até e 20 caracteres!")]
         public string? Genero { get; set; }
 
 
-        [Required(ErrorMessage = "O campo 'Cidade' é obrigatório!")]
-        [StringLength(200, MinimumLength = 3, ErrorMessage = "O campo 'Cidade' deve ter entre 3 e 200 caracteres!")]
-        public required string CidadeId { get; set; }
+        public Guid? CidadeId { get; set; }
 
 
+        public Pessoa()
+        {
+            Id = Guid.NewGuid();
+        }   
 
 
         public required Cidade Cidade { get; set; }
