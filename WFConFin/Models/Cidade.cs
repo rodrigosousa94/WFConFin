@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace WFConFin.Models
 {
@@ -25,6 +26,7 @@ namespace WFConFin.Models
 
 
         // relacionamento para o entity framework
-        public required Estado Estado { get; set; }
+        [JsonIgnore]
+        public Estado Estado { get; set; }
     }
 }
