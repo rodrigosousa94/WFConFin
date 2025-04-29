@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using WFConFin.Data;
 using WFConFin.Models;
 
@@ -22,7 +23,7 @@ namespace WFConFin.Controllers
 
 
         [HttpGet]
-        public IActionResult GetEstados()
+        public async Task<IActionResult> GetEstados()
         {
             try 
             {
@@ -37,11 +38,11 @@ namespace WFConFin.Controllers
 
 
         [HttpGet("{sigla}")]
-        public IActionResult GetEstadoPorSigla([FromRoute] string sigla)
+        public async Task<IActionResult> GetEstadoPorSigla([FromRoute] string sigla)
         {
             try
             {
-                var estado = _context.Estado.Find(sigla);
+                var estado = await _context.Estado.FindAsync(sigla);
                 if (estado == null)
                 {
                     return NotFound("Estado não encontrado");
@@ -57,7 +58,7 @@ namespace WFConFin.Controllers
 
 
         [HttpGet("Pesquisa")]
-        public IActionResult GetEstadoPorPesquisa([FromQuery] string valor)
+        public async Task<IActionResult> GetEstadoPorPesquisa([FromQuery] string valor)
         {
             try
             {
@@ -75,7 +76,7 @@ namespace WFConFin.Controllers
 
 
         [HttpGet("Paginacao")]
-        public IActionResult GetEstadoPorPaginacao([FromQuery] string valor, int skip, int take, bool ordemDesc)
+        public async Task<IActionResult> GetEstadoPorPaginacao([FromQuery] string valor, int skip, int take, bool ordemDesc)
         {
             try
             {
@@ -112,12 +113,12 @@ namespace WFConFin.Controllers
         }
 
         [HttpPost]
-        public IActionResult PostEstado([FromBody] Estado estado)
+        public async Task<IActionResult> PostEstado([FromBody] Estado estado)
         {
             try
             {
-                _context.Estado.Add(estado);
-                var valor = _context.SaveChanges();
+                await _context.Estado.AddAsync(estado);
+                var valor = await _context.SaveChangesAsync();
                 if (valor == 1)
                 {
                     return Ok("Estado criado com sucesso!");
@@ -135,12 +136,12 @@ namespace WFConFin.Controllers
 
 
         [HttpPut]
-        public IActionResult PutEstado([FromBody] Estado estado)
+        public async Task<IActionResult> PutEstado([FromBody] Estado estado)
         {
             try
             {
                 _context.Estado.Update(estado);
-                var valor = _context.SaveChanges();
+                var valor = await _context.SaveChangesAsync();
                 if (valor == 1)
                 {
                     return Ok("Estado alterado com sucesso");
@@ -158,15 +159,15 @@ namespace WFConFin.Controllers
 
 
         [HttpDelete("{sigla}")]
-        public IActionResult DeleteEstado([FromRoute] string sigla)
+        public async Task<IActionResult> DeleteEstado([FromRoute] string sigla)
         {
             try
             {
-                var estado = _context.Estado.Find(sigla);
+                var estado = await _context.Estado.FindAsync(sigla);
                 if (estado.Sigla == sigla && !string.IsNullOrEmpty(estado.Sigla))
                 {
                     _context.Estado.Remove(estado);
-                    var valor = _context.SaveChanges();
+                    var valor = await _context.SaveChangesAsync();
 
                     if (valor == 1)
                     {

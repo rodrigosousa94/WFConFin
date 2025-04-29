@@ -20,7 +20,7 @@ namespace WFConFin.Controllers
         // rotas abaixo
 
         [HttpGet]
-        public IActionResult GetCidades()
+        public async Task<IActionResult> GetCidades()
         {
             try
             {
@@ -34,7 +34,7 @@ namespace WFConFin.Controllers
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetCidade([FromRoute] Guid id) 
+        public async Task<IActionResult> GetCidade([FromRoute] Guid id) 
         {
             try
             {
@@ -49,7 +49,7 @@ namespace WFConFin.Controllers
 
 
         [HttpGet("Pesquisa")]
-        public IActionResult GetCidadePorPesquisa([FromQuery] string valor)
+        public async Task<IActionResult> GetCidadePorPesquisa([FromQuery] string valor)
         {
             try
             {
@@ -69,7 +69,7 @@ namespace WFConFin.Controllers
 
 
         [HttpGet("Paginacao")]
-        public IActionResult GetCidadePorPaginacao([FromQuery] string valor, int skip, int take, bool ordemDesc)
+        public async Task<IActionResult> GetCidadePorPaginacao([FromQuery] string valor, int skip, int take, bool ordemDesc)
         {
             try
             {
@@ -108,12 +108,12 @@ namespace WFConFin.Controllers
 
 
         [HttpPost]
-        public IActionResult PostCidades([FromBody] Cidade cidade)
+        public async Task<IActionResult> PostCidades([FromBody] Cidade cidade)
         {
             try
             {
-                _context.Cidade.Add(cidade);
-                var valor = _context.SaveChanges();
+                await _context.Cidade.AddAsync(cidade);
+                var valor = await _context.SaveChangesAsync();
 
                 if (valor == 1)
                 {
@@ -132,12 +132,12 @@ namespace WFConFin.Controllers
 
 
         [HttpPut]
-        public IActionResult PutCidade([FromBody] Cidade cidade)
+        public async Task<IActionResult> PutCidade([FromBody] Cidade cidade)
         {
             try
             {
                 _context.Cidade.Update(cidade);
-                var valor = _context.SaveChanges();
+                var valor = await _context.SaveChangesAsync();
 
                 if (valor == 1)
                 {
@@ -155,18 +155,18 @@ namespace WFConFin.Controllers
         }
 
         [HttpDelete("{id}")]
-        public IActionResult DeleteCidade([FromRoute] Guid id)
+        public async Task<IActionResult> DeleteCidade([FromRoute] Guid id)
         {
             try
             {
-                var cidade = _context.Cidade.Find(id);
+                var cidade = await _context.Cidade.AddAsync(id);
                 if (cidade == null)
                 {
                     return NotFound("Cidade não encontrada");
                 }
 
                 _context.Cidade.Remove(cidade);
-                var valor = _context.SaveChanges();
+                var valor = await _context.SaveChangesAsync();
 
                 if(valor == 1)
                 {
