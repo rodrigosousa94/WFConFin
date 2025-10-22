@@ -185,5 +185,22 @@ namespace WFConFin.Controllers
                 return BadRequest(err.Message);
             }
         }
+
+
+        [HttpGet("Pessoa/{pessoaId}")]
+        public async Task<IActionResult> GetContasPessoa([FromRoute] Guid pessoaId)
+        {
+            try
+            {
+                var conta = _context.Conta.Include(o => o.Pessoa)
+                    .Where(c => c.PessoaId == pessoaId).ToList();
+
+                return Ok(conta);
+            }
+            catch (Exception err)
+            {
+                return BadRequest(err.Message);
+            }
+        }
     }
 }
