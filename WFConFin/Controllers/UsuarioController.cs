@@ -1,18 +1,63 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using WFConFin.Data;
 using WFConFin.Models;
+using WFConFin.Services;
 
 namespace WFConFin.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class UsuarioController : Controller
     {
         private readonly WFConFinDbContext _context;
+        private readonly TokenService _service;
 
-        public UsuarioController(WFConFinDbContext context)
+        public UsuarioController(WFConFinDbContext context, TokenService service)
         {
             _context = context;
+            _service = service;
+        }
+
+
+        [HttpPost]
+        [Route("Login")]
+        [AllowAnonymous]
+        public async Task<IActionResult> Login([FromBody] UsuarioLogin usuarioLogin)
+        {
+            try
+            {
+                var usuario = _context.Usuario
+                   .Where(x => x.Login == usuarioLogin.Login).FirstOrDefault();
+
+                if (usuario == null)
+                {
+                    return NotFound("Usuario não encontrado");
+                }
+
+                if (usuario.Password != usuarioLogin.Password)
+                {
+                    return BadRequest("Senha inválida");
+                }
+
+                var token = _service.GerarToken(usuario);
+
+                usuario.Password = "";
+
+                var result = new UsuarioResponse
+                {
+                    Usuario = usuario,
+                    Token = token
+                };
+
+                return Ok(result);
+
+            }
+            catch (Exception err)
+            {
+                return BadRequest(err.Message);
+            }
         }
 
 
@@ -31,6 +76,7 @@ namespace WFConFin.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Gerente,Empregado")]
         public async Task<IActionResult> CreateUsuario([FromBody] Usuario usuario)
         {
             try
@@ -62,6 +108,7 @@ namespace WFConFin.Controllers
 
 
         [HttpPut]
+        [Authorize(Roles = "Gerente,Empregado")]
         public async Task<IActionResult> UpdateUsuario([FromBody] Usuario usuario)
         {
             try
@@ -85,6 +132,7 @@ namespace WFConFin.Controllers
 
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Gerente")]
         public async Task<IActionResult> DeleteUsuario(Guid id)
         {
             try

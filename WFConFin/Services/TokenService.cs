@@ -26,7 +26,7 @@ namespace WFConFin.Services
                 Subject = new ClaimsIdentity(
                         new Claim[] {
                             new Claim(ClaimTypes.Name, usuario.Login.ToString()),
-                            new Claim(ClaimTypes.Name, usuario.Funcao.ToString())
+                            new Claim(ClaimTypes.Role, usuario.Funcao.ToString())
                         }
                 ),
 

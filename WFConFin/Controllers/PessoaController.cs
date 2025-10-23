@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using WFConFin.Data;
 using WFConFin.Models;
 
@@ -6,6 +7,7 @@ namespace WFConFin.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class PessoaController : Controller
     {
         private readonly WFConFinDbContext _context;
@@ -32,6 +34,7 @@ namespace WFConFin.Controllers
 
 
         [HttpPost]
+        [Authorize(Roles = "Gerente,Empregado")]
         public async Task<IActionResult> CreatePessoa([FromBody] Pessoa pessoa)
         {
             try
@@ -57,6 +60,7 @@ namespace WFConFin.Controllers
 
 
         [HttpPut]
+        [Authorize(Roles = "Gerente,Empregado")]
         public async Task<IActionResult> UpdatePessoa([FromBody] Pessoa pessoa)
         {
             try
@@ -81,6 +85,7 @@ namespace WFConFin.Controllers
 
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Gerente")]
         public async Task<IActionResult> DeletePessoa([FromRoute] Guid id)
         {
             try
