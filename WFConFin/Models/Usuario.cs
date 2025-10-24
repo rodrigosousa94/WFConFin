@@ -16,7 +16,7 @@ namespace WFConFin.Models
         public string Login { get; set; }
 
         [Required(ErrorMessage = "O Password é obrigatório")]
-        [StringLength(20, MinimumLength = 3, ErrorMessage = "O Password deve ter entre 3 e 20 caracteres")]
+        [StringLength(100, MinimumLength = 3, ErrorMessage = "O Password deve ter entre 3 e 20 caracteres")]
         public string Password { get; set; }
 
         [Required(ErrorMessage = "A funcao é obrigatório")]
