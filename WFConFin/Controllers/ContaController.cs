@@ -159,29 +159,36 @@ namespace WFConFin.Controllers
 
 
         [HttpGet("Paginacao")]
-        public async Task<IActionResult> GetContaPorPaginacao([FromQuery] string valor, int skip, int take, bool ordemDesc)
+        public async Task<IActionResult> GetContaPorPaginacao([FromQuery] string? valor, int skip, int take, bool ordemDesc)
         {
             try
             {
-                var contas = _context.Conta.Include(o => o.Pessoa)
-                    .Where(c => c.Descricao.ToUpper().Contains(valor.ToUpper())
-                    || c.Pessoa.Nome.ToUpper().Contains(valor.ToUpper())
-                    ).ToList();
+
+                var lista = from o in _context.Conta.ToList()
+                            select o;
+
+                if (!String.IsNullOrEmpty(valor))
+                {
+                    lista = from o in lista
+                            where o.Descricao.ToUpper().Contains(valor.ToUpper())
+                            || o.Pessoa.Nome.ToUpper().Contains(valor.ToUpper())
+                            select o;
+                }
 
                 if (ordemDesc)
                 {
-                    contas = contas.OrderByDescending(c => c.Descricao).ToList();
+                    lista = lista.OrderByDescending(c => c.Descricao).ToList();
                 }
                 else
                 {
-                    contas = contas.OrderBy(c => c.Descricao).ToList();
+                    lista = lista.OrderBy(c => c.Descricao).ToList();
                 }
 
-                var qtde = contas.Count();
+                var qtde = lista.Count();
 
-                contas = contas.Skip(skip).Take(take).ToList();
+                lista = lista.Skip((skip - 1) * take).Take(take).ToList();
 
-                var paginacaoResponse = new PaginacaoResponse<Conta>(contas, qtde, skip, take);
+                var paginacaoResponse = new PaginacaoResponse<Conta>(lista, qtde, skip, take);
 
                 return Ok(paginacaoResponse);
             }
